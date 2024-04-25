@@ -1,0 +1,32 @@
+#testbed:
+devices:
+  n9k1:
+    connections:
+      netconf:
+        class: yang.ncdiff.ModelDevice
+        ip: 10.133.35.148
+        port: 830
+        protocol: ssh
+        hostkey_verify: False
+        look_for_keys: False
+      cli:
+        ip: 10.133.35.148
+        port: 22
+        protocol: ssh
+
+    credentials:
+      default:
+        password: tcs123
+        username: admin
+      enable:
+        password: tcs123
+    os: nxos
+    type: nxos
+
+################topology#################
+topology:
+  n9k1:
+    interfaces:
+      Ethernet1/5:
+        link: uut1_uut3_1
+        type: ethernet
