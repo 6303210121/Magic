@@ -1,0 +1,20 @@
+
+devices:
+  csr1000v-1:
+    connections:
+      netconf:
+        class: yang.ncdiff.ModelDevice
+        ip: 131.226.217.143
+        port: 830
+        protocol: ssh
+        hostkey_verify: False
+        look_for_keys: False
+    credentials:
+      default:
+        password: C1sco12345
+        username: developer
+      enable:
+        password: C1sco12345
+    os: ios
+    type: router
+
