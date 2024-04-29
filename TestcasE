@@ -1,0 +1,46 @@
+
+from pyats.topology import loader
+from ncclient import manager
+import xml.dom.minidom
+
+class NetconfTest:
+    def __init__(self, testbed):
+        self.testbed = testbed
+
+    def connect_to_device(self, device_name):
+        device = self.testbed.devices[device_name]
+        device.connect()
+        return device
+
+    def execute_netconf_operation(self, device, command):
+        with manager.connect(host=device.connections.netconf.ip,
+                             port=device.connections.netconf.port,
+                             username=device.credentials.username,
+                             password=device.credentials.password,
+                             hostkey_verify=False) as m:
+            # Execute the NETCONF operation
+            result = m.get(command)
+            print(xml.dom.minidom.parseString(result.xml).toprettyxml())  # Print the result
+
+    def disconnect_from_device(self, device):
+        device.disconnect()
+
+if __name__ == '__main__':
+    # Load the testbed file
+    testbed = loader.load('testbed.yaml')
+
+    # Create an instance of NetconfTest
+    netconf_test = NetconfTest(testbed)
+
+    # Device name to connect
+    device_name = 'ios-xe-mgmt-latest.cisco.com-3'
+
+    # Connect to the device
+    device = netconf_test.connect_to_device(device_name)
+
+    # Execute NETCONF operation
+    command = '<command-to-execute>'
+    netconf_test.execute_netconf_operation(device, command)
+
+    # Disconnect from the device
+    netconf_test.disconnect_from_device(device)
