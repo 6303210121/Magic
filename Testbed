@@ -1,0 +1,15 @@
+
+MyTestbed:
+  name: MyTestbed
+  credentials:
+    default:
+      username: YOUR_USERNAME
+      password: YOUR_PASSWORD
+  devices:
+    nexus_device:
+      alias: Nexus Device
+      type: nxos
+      connections:
+        netconf:
+          ip: YOUR_DEVICE_IP
+          port: 830
