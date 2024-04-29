@@ -1,1 +1,57 @@
 
+from pyats.topology import loader
+
+# Load the testbed file
+testbed = loader.load("your_testbed_file.yaml")
+
+# Connect to the device
+device = testbed.devices['n9k1']
+device.connect(alias='nc', via='netconf')
+
+print(device.nc)
+
+# Set timeout
+device.nc.timeout = 300
+
+# Download and scan models
+device.nc.scan_models()
+
+# Load the modules
+device.nc.models_loadable
+
+# Define the ACL configuration to be applied
+acl_rpc = '''
+        <config>
+            <System xmlns="http://cisco.com/ns/yang/cisco-nx-os-device">
+                <acl-items>
+                    <acl>
+                        <name>ACL_NAME</name>
+                        <acl-type>ipv4-acl-type</acl-type>
+                        <acl-rule-list>
+                            <acl-rule>
+                                <name>1</name>
+                                <action>permit</action>
+                                <ipv4-acl-fragment-disable>true</ipv4-acl-fragment-disable>
+                                <source-address>192.168.10.1/24</source-address>
+                                <destination-address>any</destination-address>
+                                <protocol>icmp</protocol>
+                            </acl-rule>
+                            <acl-rule>
+                                <name>2</name>
+                                <action>deny</action>
+                                <ipv4-acl-fragment-disable>true</ipv4-acl-fragment-disable>
+                                <source-address>192.168.1.1/24</source-address>
+                                <destination-address>any</destination-address>
+                                <protocol>icmp</protocol>
+                            </acl-rule>
+                        </acl-rule-list>
+                    </acl>
+                </acl-items>
+            </System>
+        </config>
+        '''
+
+# Apply the ACL configuration change
+acl_reply = device.nc.edit_config(acl_rpc, target='running')
+
+print(acl_reply)
